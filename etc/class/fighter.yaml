@@ -1,0 +1,72 @@
+hit_dice: 10
+skill_points: 2
+start_bab: 1
+bab_per_level: 1
+ability_priorities:
+  - str
+  - con
+  - dex
+  - int
+  - wis
+  - cha
+levels:
+  - level: 1
+    saves:
+      fort: 2
+      ref: 0
+      will: 0
+    bonus_feats: 1
+  - level: 2
+    saves:
+      fort: 3
+      ref: 0
+      will: 0
+    bonus_feats: 2
+  - level: 3
+    saves:
+      fort: 3
+      ref: 1
+      will: 1
+    bonus_feats: 2
+  - level: 4
+    saves:
+      fort: 4
+      ref: 1
+      will: 1
+    bonus_feats: 3
+  - level: 5
+    saves:
+      fort: 4
+      ref: 1
+      will: 1
+    bonus_feats: 3    
+  - level: 6
+    saves:
+      fort: 5
+      ref: 2
+      will: 2
+    bonus_feats: 4 
+  - level: 7
+    saves:
+      fort: 5
+      ref: 2
+      will: 2
+    bonus_feats: 4
+  - level: 8
+    saves:
+      fort: 6
+      ref: 2
+      will: 2
+    bonus_feats: 5
+  - level: 9
+    saves:
+      fort: 6
+      ref: 3
+      will: 3
+    bonus_feats: 5
+  - level: 10
+    saves:
+      fort: 7
+      ref: 3
+      will: 3
+    bonus_feats: 6
