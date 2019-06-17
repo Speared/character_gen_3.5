@@ -22,6 +22,7 @@ def load_yaml(filename):
     """
     with open(filename, 'r') as class_yaml:
         return yaml.safe_load(class_yaml)
+        
 
 def get_config(*config):
     """Get a config file.

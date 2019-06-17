@@ -108,7 +108,6 @@ def gen_character(character_class, level):
 
     """
     # TODO: this will need to be in a class someday.
-    #character_config = load_yaml('{}.yaml'.format(character_class))
     character_config = get_config('class', 'fighter')
     
     abilities = gen_ability_scores(character_config['ability_priorities'])
