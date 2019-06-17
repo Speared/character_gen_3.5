@@ -11,7 +11,7 @@ _CONFIG_PATH = os.path.join(os.path.split(__file__)[0], "etc")
 
 
 def load_yaml(filename):
-    """Load the yaml file for a class.
+    """Load a yaml file.
     
     Args:
         filename (str): Name of the yaml to load.
@@ -29,7 +29,9 @@ def get_config(*config):
     
     Args:
         config (list of str): Path from the root of the etc folder
-            to a relevent yaml file.
+            to a relevent yaml file. So, for example, calling
+            get_config("test", "config", "file") would return the
+            file ".\etc\test\config\file.yaml".
      
     Returns:
         dict: Loaded config file.
