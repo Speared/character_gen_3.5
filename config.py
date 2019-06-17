@@ -1,4 +1,10 @@
-"""Load config yaml files."""
+"""Load config yaml files.
+
+Globals:
+    _CONFIG_PATH (str): Absolute path to the root of the etc folder in this
+        project.
+
+"""
 
 # Import built-in modules
 import os
