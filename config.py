@@ -14,7 +14,7 @@ def load_yaml(filename):
     """Load a yaml file.
     
     Args:
-        filename (str): Name of the yaml to load.
+        filename (str): Absolute path of a .yaml file to load.
     
     Returns:
         dict: Loaded yaml file contents.
@@ -25,7 +25,7 @@ def load_yaml(filename):
         
 
 def get_config(*config):
-    """Get a config file.
+    """Get configuration data.
     
     Args:
         config (list of str): Path from the root of the etc folder
