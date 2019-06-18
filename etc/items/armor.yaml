@@ -5,91 +5,109 @@ light:
     max_dex: 8
     armor_check_penalty: 0
     spell_fail: 5
+    gold: 5
   - name: leather
     ac: 2
     max_dex: 6
     armor_check_penalty: 0
     spell_fail: 10
+    gold: 10
   - name: studded_leather
     ac: 3
     max_dex: 5
     armor_check_penalty: -1
     spell_fail: 15
+    gold: 25
   - name: chain_shirt
     ac: 4
     max_dex: 4
     armor_check_penalty: -2
     spell_fail: 20
+    gold: 100
 medium:
   - name: hide
     ac: 3
     max_dex: 4
     armor_check_penalty: -3
     spell_fail: 20
+    gold: 15
   - name: scale_mail
     ac: 4
     max_dex: 3
     armor_check_penalty: -4
     spell_fail: 25
+    gold: 50
   - name: chainmail
     ac: 5
     max_dex: 2
     armor_check_penalty: -5
     spell_fail: 30
+    gold: 150
   - name: breastplate
     ac: 5
     max_dex: 3
     armor_check_penalty: -4
     spell_fail: 25
+    gold: 200
 heavy:
-  - name: 'splint_mail'
+  - name: splint_mail
     ac: 6
     max_dex: 0
     armor_check_penalty: -7
     spell_fail: 40
-  - name: 'banded_mail'
+    gold: 200
+  - name: banded_mail
     ac: 6
     max_dex: 1
     armor_check_penalty: -6
     spell_fail: 35
-  - name: 'half_plate'
+    gold: 250
+  - name: half_plate
     ac: 7
     max_dex: 0
     armor_check_penalty: -7
     spell_fail: 40
-  - name: 'full_plate'
+    gold: 600
+  - name: full_plate
     ac: 8
     max_dex: 1
     armor_check_penalty: -6
     spell_fail: 35
+    gold: 1500
 shield:
   - name: buckler
     ac: 1
     max_dex: ~
     armor_check_penalty: -1
     spell_fail: 5
+    gold: 15
   - name: light_wooden_shield
     ac: 1
     max_dex: ~
     armor_check_penalty: -1
     spell_fail: 5
+    gold: 3
   - name: light_steel_shield
     ac: 1
     max_dex: ~
     armor_check_penalty: -1
     spell_fail: 5
+    gold: 9
   - name: heavy_wooden_shield
     ac: 2
     max_dex: ~
     armor_check_penalty: -2
     spell_fail: 15
+    gold: 7
   - name: heavy_steel_shield
     ac: 2
     max_dex: ~
     armor_check_penalty: -1
     spell_fail: 15
+    gold: 20
   - name: tower_shield
     ac: 4
     max_dex: 2
     armor_check_penalty: -10
     spell_fail: 50
+    gold: 30

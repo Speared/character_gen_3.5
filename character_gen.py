@@ -5,6 +5,7 @@ import random
 
 # Import local modules
 from config import get_config
+import item_gen
 
         
 def get_roll(num, dice):
@@ -58,8 +59,7 @@ def gen_ability_scores(ability_priorities):
     scores = get_scores(len(ability_priorities))
     scores.sort(reverse=True)
     ability_dict = {}
-    index = 0
-    for priority in ability_priorities:
+    for index, priority in enumerate(ability_priorities):
         ability_dict[priority] = scores[index]
         index += 1         
     return ability_dict
@@ -96,34 +96,150 @@ def get_max_hp(level, con_modifier, hit_dice):
 
     """
     return get_roll(level, hit_dice) + level * con_modifier
+
+
+class Character():
+    """An npc.
     
-def gen_character(character_class, level):
-    """Get a character sheet for an npc.
+    Holds hp, ac, ability modifiers, skills, size, race, ect, everything
+    you need for a fully flushed-out character.
+
+    Globals:
+        _BASE_AC (int): The armor class all characters have by default.
     
-    Args:
-        character_class (str): Class to build a character for.
-            Requiers a <character_class>.yaml file to exist
-            to pull stats for.
-        level (int): Character level.
+    Attributes:
+        ability_scores (dict): Keys are the 6 dnd abilities (con, str, dex
+            int, wis, cha), values are the scores for said abilities.
+        hp (int): Max hit points.
+        items (dict): Keys are various 'slots' charaters have, for held
+            weapons, jewlery, armor and whatnot. Values are lists of items.
 
     """
-    # TODO: this will need to be in a class someday.
-    character_config = get_config('class', 'fighter')
     
-    abilities = gen_ability_scores(character_config['ability_priorities'])
+    _BASE_AC = 10
     
-    hp = get_max_hp(
-        level,
-        get_ability_modifier(abilities['con']),
-        character_config['hit_dice']
-    )
+    def __init__(self, character_class, level, race="Human", gold=2000):
+        """Initilize a character.
+        
+        Args:
+            character_class (str): Character class.
+            level (int): Level.
+            race (str, optional): Character race, defaults to Human.
+            gold (int, optional): Rough total value of the npc's
+                equiptment. Defaults to 2000, to cover plate armor
+                and a weapon.
+
+        """
+        class_config = get_config('class', character_class)
+        self.ability_scores = gen_ability_scores(
+            class_config['ability_priorities']
+        )
+        self.hp = get_max_hp(
+            level,
+            get_ability_modifier(self.ability_scores['con']),
+            class_config['hit_dice']
+        )
+        
+        # Many item slots really only make sense having one of them.
+        # These are all being made lists though, to cover things like
+        # multiple weapons from dual-weilding, multiple amulets from
+        # having multiple necks, wearing 3 pairs of pants at once, ect.
+        # Enforcing logical limits on item usage will need to come from
+        # item generation code.
+        self.held_items = {
+            'weapon': [],
+            'quivered': [],
+            'rings': [],
+            'amulet': [],
+            'armor': [],
+            'held': []
+        }
+        
+        # TODO: armor generation needs to be part of a more flushed out
+        # item generation, using starting gold to make purchases at random.
+        self.held_items['armor'].append(item_gen.get_armor('medium', 'heavy'))
     
-    # Debug prints.
-    # TODO: Remove this. put it in a class and add logging if it's needed.
-    print "HP: {}".format(hp)
-    for key, value in abilities.items():
-        print key, value, '\t', get_ability_modifier(value, printable=True)
+    @property
+    def ability_modifiers(self):
+        """dict: Ability scores converted to modifiers"""
+        return_me = {}
+        for key in self.ability_scores:
+            return_me[key] = get_ability_modifier(self.ability_scores[key])
+        return return_me
+    
+    @property
+    def max_dex_bonus(self):
+        """int: Max bonus dex can apply to ac. Affected by armor.
+        
+        If the npc is wearing multiple peices of armor use the lowest
+        avalible max dex bonus.
+        
+        """
+        max_dex_bonus = None
+        for armor in self.held_items['armor']:
+            if not max_dex_bonus or max_dex_bonus > armor['max_dex']:
+                max_dex_bonus = armor['max_dex']
+        return max_dex_bonus
+    
+    @property
+    def item_ac(self):
+        """int: Total bonus to ac from items.
+        
+        Unfortunatly has to check every item catergory, in case somone with
+        a sword of +1 ac comes along to mess up this character gen.
+
+        """
+        total_ac = 0
+        for key, value in self.held_items.items():
+            for item in value:
+                total_ac += item.get('ac', 0)
+        return total_ac
+    
+    @property
+    def ac(self):
+        """int: Armor class of the character.
+        
+        This is their armor in normal situations. Ie: not touch, or flat
+        footed.
+        
+        """
+        return (
+            self._BASE_AC
+            + min(self.ability_modifiers['dex'], self.max_dex_bonus)
+            + self.item_ac
+        )
+    
+    @property
+    def touch_ac(self):
+        """int: Armor class against touch attacks."""
+        return (
+            self._BASE_AC
+            + min(self.ability_modifiers['dex'], self.max_dex_bonus)
+        )
+        
+    @property
+    def flatfooted_ac(self):
+        """int: Armor class when suprised"""
+        return (
+            self._BASE_AC
+            + self.item_ac
+        )
+    
+    def print_character_sheet(self):
+        print "HP: {}".format(self.hp)
+        print "Ability scores:"
+        for key, value in self.ability_scores.items():
+            print "\t", key, value, '\t', get_ability_modifier(
+                value, printable=True) 
+        print "ac: {} ({} flatfooted, {} touch)".format(
+            self.ac, self.flatfooted_ac, self.touch_ac)
+        print "items:"
+        for key, value in self.held_items.items():
+            print "\t", "{}: ".format(
+                key), " ".join(item['name'] for item in value)
+
     
 if __name__ == '__main__':
-    gen_character("fighter", 5)
+    my_character = Character('fighter', 5)
+    my_character.print_character_sheet()
     
