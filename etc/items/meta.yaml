@@ -1,0 +1,128 @@
+# Data that afects other configs
+
+# Meta race.
+
+# Size categories, affects weapons damage and ac mostly.
+# The 0-8 indexes are going to matter most here, this list
+# provides a conveneient way to convert a size plain-english
+# name to a size index.
+sizes:
+ - fine
+ - diminutive
+ - tiny
+ - small
+ - medium
+ - large
+ - huge
+ - gargantuan
+ - colossal
+ 
+ # Meta weapons.
+ 
+ # Keys are the damage roll on a medium size version
+ # of the weapon. Values are the damages those weapons
+ # will do for weapons of the same size index.
+ # This could likely be done in a formula of some sort
+ # instead, but here we are.
+ weapon_sizes:
+  1d2:
+   - 1
+   - 1
+   - 1
+   - 1
+   - 1d2
+   - 1d3
+   - 1d4
+   - 1d6
+   - 1d8
+  1d3:
+   - 1
+   - 1
+   - 1
+   - 1d2
+   - 1d3
+   - 1d4
+   - 1d6
+   - 1d8
+   - 2d6
+  1d4:
+   - 1
+   - 1
+   - 1d2
+   - 1d3
+   - 1d4
+   - 1d6
+   - 1d8
+   - 2d6
+   - 3d6
+  1d6:
+    - 1
+    - 1d2
+    - 1d3
+    - 1d4
+    - 1d6
+    - 1d8
+    - 2d6
+    - 3d6
+    - 4d6
+    - 5d6
+  1d8:
+   - 1d2
+   - 1d3
+   - 1d4
+   - 1d6
+   - 1d8
+   - 2d6
+   - 3d6
+   - 4d6
+   - 6d6
+  1d10:
+   - 1d3
+   - 1d4
+   - 1d6
+   - 1d8
+   - 1d10
+   - 2d8
+   - 3d8
+   - 4d8
+   - 6d8
+  1d12:
+   - 1d4
+   - 1d6
+   - 1d8
+   - 1d10
+   - 1d12
+   - 3d6
+   - 4d6
+   - 6d6
+   - 8d6
+  1d20:
+   - 1d6
+   - 1d8
+   - 1d10
+   - 1d12
+   - 1d20
+   - 3d10
+   - 4d10
+   - 6d10
+   - 8d10
+  2d4:
+   - 1d2
+   - 1d3
+   - 1d4
+   - 1d6
+   - 2d4
+   - 2d6
+   - 3d6
+   - 4d6
+   - 6d6
+  2d6:
+   - 1d4
+   - 1d6
+   - 1d8
+   - 1d10
+   - 2d6
+   - 3d6
+   - 4d6
+   - 6d6
+   - 8d6
