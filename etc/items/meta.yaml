@@ -24,6 +24,7 @@ sizes:
  # will do for weapons of the same size index.
  # This could likely be done in a formula of some sort
  # instead, but here we are.
+ # Source: http://www.d20srd.org/srd/equipment/weapons.htm
  weapon_sizes:
   1d2:
    - 1
