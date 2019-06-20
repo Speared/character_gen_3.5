@@ -26,26 +26,36 @@ def get_roll(num, dice):
 def roll_string(roll):
     """Convert a string into a random number.
     
+    Works by trying to evaluate XdX statments first, then uses 
+    eval statments to do the actual math, starting with brackets
+    until none are left and then the whole given string.
+    
+    This allows for order of operations to be respected. Decimals
+    are respected in the actual math but NOT in XdX statments.
+    
+    Things that will work:
+        1d6         Random number from 1 to 6
+        1d6 + 4     Random number from 1 to 6, + 4
+        (1d6)*0.5   Random number from 0 to 3
+        (d6)+(d6) Sum of two random numbers from 1 to 6
+        2d6         Also the sum of two random numbers from 1 to 6
+        (1d6)2      A random number from 1 to 6, times 2
+        
+    Things that will not work as expected:
+        d6.5        1d6 resolved to a random number, eval appends the .5
+                        to the result, then removes it by casting to an int.
+        d6.5.5      Syntax error
+        ()          Freeze forever TODO FIX THIS
+        (           Syntax error
+        sys         TypeError: int() argument must be a string or a number,
+                        not 'module
+        
     Args:
         roll (str): String representing a roll.
     
     Returns:
-        int: Random number based on given string.
-    
-    Examples:
-        roll='1d6': Return a random number from 1 to 6.
-        roll='d6': Return a random number from 1 to 6.
-        roll='1': Return 1.
-        roll='2d6': Return the sum of two random numbers from  1 to 6.
-            number from 1 to 6.
-        roll='1d6+1' Return a random number from 1 to 6, plus 1.
-        roll='3+2d6/1d38(1d6+6d6): Return 3 plus the sum of two random
-            numbers from 1 to 6 divided by a random number between 1 and 38
-            times the sum of one random number from 1 to 6 and the sum of
-            six random numbers from 1 to 6. This will pretty much never be
-            needed.
-        roll-'   1     d 6  ': Return a random number from 1 to 6.
-
+        int: Random number based on given string. 
+        
     """
     # TODO: unit test
     roll = roll.replace(' ', '')
@@ -66,7 +76,7 @@ def roll_string(roll):
         group = re.findall(pattern, roll)[0]
     except IndexError:
         # No brackets? Let's exit early!
-        return eval(roll)
+        return int(eval(roll))
     
     while group:
         roll = roll.replace(group, "{}".format(eval(group)), 1)
@@ -74,7 +84,7 @@ def roll_string(roll):
             group = re.findall(pattern, roll)[0]
         except IndexError:
             break
-    return eval(roll)
+    return int(eval(roll))
 
 
 if __name__ == '__main__':
