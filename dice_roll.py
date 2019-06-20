@@ -21,14 +21,6 @@ def get_roll(num, dice):
 
     """
     return sum([random.randint(1, dice) for x in range(num)])
-
-
-def _solve_brackets(roll):
-    """todo"""
-    # TODO: continue here
-    while re.search(r'\([0-9+\*\/()])', roll)
-        for group in re.findall(r'\([0-9+\*\/]\)'):
-            roll.replace(group, "{}".replace(eval(group)), 1)
     
     
 def roll_string(roll):
@@ -61,16 +53,30 @@ def roll_string(roll):
     
     # Convers XdX statments to numbers.
     for group in re.findall(r'[0-9]*d[1-9][0-9]*', roll):
-        print "group: ", group
         i, j = group.split('d')
-        print i, j
         if not i:
             i = 1
         roll = roll.replace(group, str(get_roll(int(i), int(j))), 1)
-        print roll
     
-    print "returning:", roll
+    roll = re.sub('([0-9\)])(\()', r'\1*(', roll)
+    roll = re.sub('(\))([\(0-9])', r')*\2', roll)
+    
+    pattern = r'\([0-9+\*\/]*\)'
+    try:
+        group = re.findall(pattern, roll)[0]
+    except IndexError:
+        # No brackets? Let's exit early!
+        return eval(roll)
+    
+    while group:
+        roll = roll.replace(group, "{}".format(eval(group)), 1)
+        try:
+            group = re.findall(pattern, roll)[0]
+        except IndexError:
+            break
     return eval(roll)
-    
+
+
 if __name__ == '__main__':
-    print roll_string('1d6+2(d4(3)) + 1')
+    import sys
+    print "Result: {}".format(roll_string(''.join(sys.argv[1:])))
