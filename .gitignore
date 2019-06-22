@@ -1,5 +1,6 @@
 # Compiled python files
 *.pyc
 
-# Irrelevent to anyone but me
+# Pycharm files
+.idea/*
 open_pycharm.bat
