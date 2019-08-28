@@ -251,7 +251,7 @@ class Character():
             (
                 self.class_config['skill_points'] +
                 self.ability_modifiers["int"]
-            ) * self.level
+            ) * self.level - 1
         ) 
     
     def print_character_sheet(self):
@@ -273,6 +273,9 @@ class Character():
 
     
 if __name__ == '__main__':
-    my_character = Character('fighter', 5)
-    my_character.print_character_sheet()
-    
+    gen_me = get_config('templates', 'gen_me')
+    for name, character in gen_me.items():
+        print name
+        my_character = Character(character['class'], character['level'])
+        my_character.print_character_sheet()
+        print ""
