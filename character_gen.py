@@ -1,6 +1,7 @@
 """Generate a character sheet for an npc."""
 
 # Import built-in modules
+import math
 import random
 
 # Import local modules
@@ -130,6 +131,11 @@ class Character():
                 and a weapon.
 
         """
+        self.character_class = character_class
+        self.level = level
+        self.race = race
+        self.gold = gold
+        
         self.class_config = get_config('class', character_class)
         self.ability_scores = gen_ability_scores(
             self.class_config['ability_priorities']
@@ -225,14 +231,41 @@ class Character():
             + self.item_ac
         )
     
+    @property
+    def bab(self):
+        """int: Base attack bonus"""
+        return int(
+            (
+                self.class_config['start_bab'] +
+                math.ceil(
+                    self.class_config['bab_per_level'] * (self.level - 1)
+                )
+            )
+        )
+    
+    @property
+    def total_skill_points(self):
+        """int: Total skill points for this class/level/intelligence"""
+        return (
+            self.class_config['skill_points'] * 4 +
+            (
+                self.class_config['skill_points'] +
+                self.ability_modifiers["int"]
+            ) * self.level
+        ) 
+    
     def print_character_sheet(self):
+        print "Class: {}".format(self.character_class)
         print "HP: {}".format(self.hp)
+        print "level: {}".format(self.level)
+        print "Base attack bonus: {}".format(self.bab) 
         print "Ability scores:"
         for key, value in self.ability_scores.items():
             print "\t", key, value, '\t', get_ability_modifier(
                 value, printable=True) 
         print "ac: {} ({} flatfooted, {} touch)".format(
             self.ac, self.flatfooted_ac, self.touch_ac)
+        print "Total skill points: {}".format(self.total_skill_points)
         print "items:"
         for key, value in self.held_items.items():
             print "\t", "{}: ".format(
