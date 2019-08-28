@@ -4,7 +4,7 @@
 
 # Size categories, affects weapons damage and ac mostly.
 # The 0-8 indexes are going to matter most here, this list
-# provides a conveneient way to convert a size plain-english
+# provides a convenient way to convert a size plain-english
 # name to a size index.
 sizes:
   - fine

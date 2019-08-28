@@ -130,14 +130,14 @@ class Character():
                 and a weapon.
 
         """
-        class_config = get_config('class', character_class)
+        self.class_config = get_config('class', character_class)
         self.ability_scores = gen_ability_scores(
-            class_config['ability_priorities']
+            self.class_config['ability_priorities']
         )
         self.hp = get_max_hp(
             level,
             get_ability_modifier(self.ability_scores['con']),
-            class_config['hit_dice']
+            self.class_config['hit_dice']
         )
         
         # Many item slots really only make sense having one of them.
