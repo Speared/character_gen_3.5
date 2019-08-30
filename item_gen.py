@@ -31,27 +31,54 @@ def get_armor(*desired_category):
     return valid_armors[randint(0, len(valid_armors) - 1)]
 
 
-def _search_items(search_dict, find_me):
+def _search_items(search_list, find_me):
     """Search for a key occurring anywhere in a dict of dicts
     
     This aims to be a breadth-first search, since it will mostly/only
     be used to grab items by name, which will usually be within the
     first couple tiers of item stats
-    
+
+    Args:
+        search_list (list): Ideally this will be a list of dicts pulled from
+            config files, but can deal with a list of any data type a yaml
+            file may hold.
+        find_me (str): An item name to find. Item names can either be a
+            key in a dictionary, or a dictionary with a matching `-name` field.
+    Returns:
+        dict|str: This will probably be a dictionary representing the item
+            you were looking for. But if an individual word matches match_me
+            that can be returned too.
+
     """
     values_list = []
-    for key in search_dict:
+    for key in search_list:
         try:
+            if key == find_me:
+                try:
+                    search_list[key]['name'] = find_me
+                    return search_list[key]
+                except TypeError:
+                    # Found your value, but it isn't a dict? weird that you
+                    # wanted to confirm a word exists in the config but
+                    # whatever, here is your confirmation.
+                    return find_me
+            if key.get('name', '') == find_me:
+                return key
             # Append item name before returning it so we still
             # know what item this is
             key[find_me]['name'] = find_me
             return key[find_me]
+        except AttributeError:
+            continue
         except KeyError:
             values_list.extend(key.values())
         except TypeError:
-            # key is not a collection and does not contain more configs.
-            continue
-        values_list.extend(key)
+            try:
+                values_list.extend(key.items())
+                continue
+            except TypeError:
+                # key is not a collection and does not contain more configs.
+                continue
 
     if values_list:
         return _search_items(values_list, find_me)
