@@ -4,9 +4,12 @@
 import math
 import random
 
+# Import third-part modules
+from six import string_types
+
 # Import local modules
 from config import get_config
-import item_gen
+from item_gen import get_item_by_name
 
         
 def get_roll(num, dice):
@@ -45,7 +48,7 @@ def get_scores(num):
 
     
 def gen_ability_scores(ability_priorities):
-    """Roll 6 sets of stats and assign them to adilites (str/int/wis/ect).
+    """Roll 6 sets of stats and assign them to abilities (str/int/wis/ect).
     
     Works based on the order of the ability_priorities list in character
     config files.
@@ -71,11 +74,11 @@ def get_ability_modifier(ability_score, printable=False):
     
     Args:
         ability_score: Ability score.
-        printable (bool, optional): If true return a string explisitly
-            adding a '+' for nicer printing. 
+        printable (bool, optional): If true return a string, adding a '+'
+            for nicer printing.
     
     Returns:
-        int: Ability modifier.
+        int|str: Ability modifier.
 
     """
     modifier = (ability_score - 10) // 2
@@ -99,7 +102,7 @@ def get_max_hp(level, con_modifier, hit_dice):
     return get_roll(level, hit_dice) + level * con_modifier
 
 
-class Character():
+class Character(object):
     """An npc.
     
     Holds hp, ac, ability modifiers, skills, size, race, ect, everything
@@ -112,15 +115,16 @@ class Character():
         ability_scores (dict): Keys are the 6 dnd abilities (con, str, dex
             int, wis, cha), values are the scores for said abilities.
         hp (int): Max hit points.
-        items (dict): Keys are various 'slots' charaters have, for held
-            weapons, jewlery, armor and whatnot. Values are lists of items.
+        items (dict): Keys are various 'slots' characters have, for held
+            weapons, jewelery, armor and whatnot. Values are lists of items.
 
     """
     
     _BASE_AC = 10
     
-    def __init__(self, character_class, level, race="Human", gold=2000):
-        """Initilize a character.
+    def __init__(self, character_class, level, race="Human", gold=2000,
+                 items=None):
+        """Initialize a character.
         
         Args:
             character_class (str): Character class.
@@ -129,6 +133,9 @@ class Character():
             gold (int, optional): Rough total value of the npc's
                 equiptment. Defaults to 2000, to cover plate armor
                 and a weapon.
+            items (dict, optional): Keys are item types
+                (weapon/armor/whatever), values are item names or dicts
+                describing the item.
 
         """
         self.character_class = character_class
@@ -148,7 +155,7 @@ class Character():
         
         # Many item slots really only make sense having one of them.
         # These are all being made lists though, to cover things like
-        # multiple weapons from dual-weilding, multiple amulets from
+        # multiple weapons from dual-welding, multiple amulets from
         # having multiple necks, wearing 3 pairs of pants at once, ect.
         # Enforcing logical limits on item usage will need to come from
         # item generation code.
@@ -163,7 +170,18 @@ class Character():
         
         # TODO: armor generation needs to be part of a more flushed out
         # item generation, using starting gold to make purchases at random.
-        self.held_items['armor'].append(item_gen.get_armor('medium', 'heavy'))
+        if not items:
+            return
+        for item_type in self.held_items:
+            try:
+                for item in items[item_type]:
+                    if isinstance(item, string_types):
+                        item = get_item_by_name(item)
+                self.held_items[item_type].append(item)
+            except KeyError:
+                continue
+
+        #self.held_items['armor'].append(item_gen.get_armor('medium', 'heavy'))
     
     @property
     def ability_modifiers(self):
@@ -177,13 +195,15 @@ class Character():
     def max_dex_bonus(self):
         """int: Max bonus dex can apply to ac. Affected by armor.
         
-        If the npc is wearing multiple peices of armor use the lowest
-        avalible max dex bonus.
+        If the npc is wearing multiple pieces of armor use the lowest
+        available max dex bonus.
         
         """
-        max_dex_bonus = None
+        max_dex_bonus = 999
         for armor in self.held_items['armor']:
-            if not max_dex_bonus or max_dex_bonus > armor['max_dex']:
+            if armor['max_dex'] == '~':
+                continue
+            if max_dex_bonus > armor['max_dex']:
                 max_dex_bonus = armor['max_dex']
         return max_dex_bonus
     
@@ -191,7 +211,7 @@ class Character():
     def item_ac(self):
         """int: Total bonus to ac from items.
         
-        Unfortunatly has to check every item catergory, in case somone with
+        Unfortunately has to check every item category, in case someone with
         a sword of +1 ac comes along to mess up this character gen.
 
         """
@@ -209,6 +229,9 @@ class Character():
         footed.
         
         """
+        if not min(self.ability_modifiers['dex'], self.max_dex_bonus):
+            print "here"
+
         return (
             self._BASE_AC
             + min(self.ability_modifiers['dex'], self.max_dex_bonus)
@@ -225,7 +248,7 @@ class Character():
         
     @property
     def flatfooted_ac(self):
-        """int: Armor class when suprised"""
+        """int: Armor class when surprised"""
         return (
             self._BASE_AC
             + self.item_ac
@@ -276,6 +299,10 @@ if __name__ == '__main__':
     gen_me = get_config('templates', 'gen_me')
     for name, character in gen_me.items():
         print name
-        my_character = Character(character['class'], character['level'])
+        my_character = Character(
+            character['class'],
+            character['level'],
+            items=character.get('items')
+        )
         my_character.print_character_sheet()
         print ""

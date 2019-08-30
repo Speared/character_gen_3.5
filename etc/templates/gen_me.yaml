@@ -10,41 +10,46 @@ bible_johny:
     race: dwarf
     level: 5
     class: cleric
-    weapons: 
-        - heavy_mace
-    armor:
-        - half_plate
-        - tower_shield
+    items:
+        weapons: 
+            - heavy_mace
+        armor:
+            - half_plate
+            - tower_shield
 diggy:
     race: dwarf
     level: 5
     class: warrior
-    weapons:
-        - mattock
-    armor:
-        - hide
+    items:
+        weapons:
+            - mattock
+        armor:
+            - hide
 duggy:
     race: dwarf
     level: 5
     class: warrior
-    weapons:
-        - mattock
-        - hide
-    armor:
-        - hide
+    items:
+        weapons:
+            - mattock
+            - hide
+        armor:
+            - hide
 hunter:
     race: dwarf
     level: 6
     class: fighter
-    weapons:
-        - repeating_light_crossbow
-    armor:
-        - hide
+    items:
+        weapons:
+            - repeating_light_crossbow
+        armor:
+            - hide
 mcmurderface:
     race: dwarf
     level: 8
     class: barbarian
-    weapons:
-        greatsword:
-    armor:
-        - full_plate
+    items:
+        weapons:
+            - greatsword
+        armor:
+            - full_plate
