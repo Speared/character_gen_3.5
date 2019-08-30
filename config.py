@@ -50,3 +50,20 @@ def get_config(*config):
         config = list(config)
         config[final_index] = "{}.yaml".format(config[final_index])
     return load_yaml(os.path.join(_CONFIG_PATH, *config))
+
+
+def get_configs_in_dir(*config):
+    """Get every configuration in a given folder in etc.
+    
+    Args:
+        config (list of str): Path from the root of the etc folder
+            to a folder full of yaml files. So, for example, calling
+            get_config("test", "config") would return every yaml file
+            in ".\etc\test\config\".
+    
+    """
+    root = os.path.join(_CONFIG_PATH, *config)
+    return [
+        load_yaml(os.path.join(root, file_))
+        for file_ in os.listdir(root)
+    ]
